@@ -1,77 +1,10 @@
-import json
-import re
 from oauth_helper import get_valid_access_token
 from webex_utils import get_time_span, to_epoch_ms
-
+from webex_contact_center_utils import *
+from webex_contact_center_search_query_template import _QUERY_TEMPLATE_MAP
 from webex_constants import (
    _Webex_Contact_Center_BASE_URL
 )
-
-
-def extract_nested_list(response):
-   data_content = response.get("data", {})
-   first_level_val = next(iter(data_content.values()), {})
-   events = next(iter(first_level_val.values()), [])
-   return events
-
-def prepare_paginated_query(query_str):
-    # Remove any existing hardcoded pagination blocks to start fresh
-    query_str = re.sub(r',?\s*pagination\s*:\s*\{[^}]+\}', '', query_str)
-
-    # Update the Query Header (Variable Definitions)
-    # Adds '$cursor: String' inside the query(...) parentheses
-    if '$cursor' not in query_str:
-        query_str = re.sub(
-            r'query\s*\(([^)]+)\)',
-            r'query (\1, $cursor: String)',
-            query_str
-        )
-
-    # Update the Data Object (Arguments) with 'pagination: { cursor: $cursor })'
-    if 'pagination' not in query_str:
-        query_str = re.sub(
-            r'(\b(?!query\b)\w+\s*\([^)]+)\)',
-            r'\1, pagination: { cursor: $cursor })',
-            query_str
-        )
-
-    # Universal PageInfo Injection
-    if 'pageInfo' not in query_str:
-        # Matches the main object and the first inner list block
-        query_str = re.sub(
-            r'(\w+\s*\{)(\s*\w+\s*\{[^{}]*\})',
-            r'\1\2\n    pageInfo {\n      hasNextPage\n      endCursor\n    }',
-            query_str
-        )
-
-    # Final Cleanup: Fix double commas or spaces caused by regex
-    query_str = query_str.replace(', ,', ',').replace('(,', '(').strip()
-
-    return query_str
-
-
-def find_key_recursive(obj, target_key):
-   """
-   Recursively searches for a key in a nested dictionary/list structure.
-   Returns the value of the key if found, otherwise returns None.
-   """
-   if isinstance(obj, dict):
-      #Check if the key is at the current level
-      if target_key in obj:
-         return obj[target_key]
-      #If not, drill down into each value
-      for value in obj.values():
-         result = find_key_recursive(value, target_key)
-         if result is not None:
-               return result
-   elif isinstance(obj, list):
-      #If it's a list, check each item in the list
-      for item in obj:
-         result = find_key_recursive(item, target_key)
-         if result is not None:
-               return result
-   return None
-
 
 
 def collect_events(helper, ew):
@@ -85,17 +18,13 @@ def collect_events(helper, ew):
    stored_access_token = opt_global_account.get("access_token")
    stored_refresh_token = opt_global_account.get("refresh_token")
    base_endpoint = opt_global_account.get("endpoint")
-
    
    # Input args
    opt_start_time = helper.get_arg("start_time")
    opt_end_time = helper.get_arg("end_time")
    opt_webex_contact_center_region = helper.get_arg("webex_contact_center_region")
    opt_org_id = helper.get_arg("org_id")
-   opt_method = helper.get_arg("method")
-   opt_query = helper.get_arg("query")
-   helper.log_debug(f"[-] opt_query: {opt_query}")
-
+   opt_query_template = helper.get_arg("query_template")
 
    # Construct the url 
    webex_contact_center_base_url = _Webex_Contact_Center_BASE_URL.format(region=opt_webex_contact_center_region)
@@ -118,7 +47,7 @@ def collect_events(helper, ew):
    # retrieve the start and end time according to the checkpoiting logic
    start_time, end_time = get_time_span(opt_start_time, opt_end_time, last_run_timestamp, "%Y-%m-%dT%H:%M:%SZ")
    
-   # check if there is a value for the start and end time, otherwise don't do anything
+   # check if there is a value for the start and end time, otherwise don"t do anything
    if not start_time and not end_time:
       helper.log_info(f"[-] Finished ingestion for {input_name} for time range {start_time} - {end_time}.")
       return
@@ -126,14 +55,14 @@ def collect_events(helper, ew):
    helper.log_debug(f"[-] Using start_time: {start_time} and end_time: {end_time}.")
    
    variables = {
-      'from': to_epoch_ms(start_time),
-      'to': to_epoch_ms(end_time)
+      "from": to_epoch_ms(start_time),
+      "to": to_epoch_ms(end_time)
    }
 
    # Construct the payload
    payload = {
-      'query': prepare_paginated_query(opt_query),
-      'variables': variables
+      "query": prepare_paginated_query(_QUERY_TEMPLATE_MAP[opt_query_template]),
+      "variables": variables
    }
 
    try:
@@ -186,21 +115,34 @@ def collect_events(helper, ew):
             else:
                helper.log_debug("[-] Reached the last page.")
       helper.log_debug(f"[-] Fetched {len(all_events)} data for input {input_name} for time range [{start_time} - {end_time}]")
+   except Exception as e:
+      helper.log_error("Request failed to get date from webex {} API: {}".format(url, repr(e)))
+      raise e
 
+   try:
       # write data into Splunk
       if all_events:
+         total_cnt = 0
          for item in all_events:
-            event = helper.new_event(
-               index=helper.get_output_index(),
-               sourcetype="cisco:webex:contact:center",
-               data=json.dumps(item)
-            )
-            ew.write_event(event)
+            if opt_query_template == "AAR":
+               cnt = write_AAR_event(helper, ew, item)
+               total_cnt += cnt
+            elif opt_query_template == "ASR":
+               event_timestamp = item.get( "startTime") / 1000.0  # convert millisecond to second
+               cnt = write_event(helper, ew, item, event_timestamp, "cisco:webex:contact:center:ASR")
+               total_cnt += cnt
+            elif opt_query_template == "CSR":
+               event_timestamp = item.get( "createdTime") / 1000.0  # convert millisecond to second
+               cnt = write_event(helper, ew, item, event_timestamp, "cisco:webex:contact:center:CSR")
+               total_cnt += cnt
+            else:
+               cnt = write_CAR_event(helper, ew, item)
+               total_cnt += cnt
          # save the end_time as the checkpoint only after data has been successfully retrieved and ingested into Splunk
-         helper.log_debug(f"[-] Ingested {len(all_events)} data for input {input_name} for time range [{start_time} - {end_time}]")
+         helper.log_debug(f"[-] Ingested {total_cnt} data for input {input_name} for time range [{start_time} - {end_time}]")
          if all_events:
             helper.save_check_point(last_run_timestamp_checkpoint_key, end_time)
             helper.log_debug(f"[-] Saved checkpoint - end time: {end_time}.")
    except Exception as e:
-      helper.log_error("[-] Request failed to get date from webex {} API: {}".format(url, repr(e)))
+      helper.log_error(f"Error happened while writing data into Splunk for input {input_name} for time range [{start_time} - {end_time}]")
       raise e

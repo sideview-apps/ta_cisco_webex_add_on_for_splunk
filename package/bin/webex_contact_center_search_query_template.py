@@ -1,0 +1,443 @@
+AAR_query_string = """
+query ($from: Long!, $to: Long!) {   
+    agentSession(from:$from, to: $to) {
+        agentSessions {
+            agentSessionId
+            agentId
+            agentName
+            userLoginId
+            teamId
+            teamName
+            siteId
+            siteName
+            channelInfo {
+                channelId
+                channelType
+                agentPhoneNumber
+                subChannelType
+                activities{
+                    nodes{
+                        id
+                        startTime
+                        endTime
+                        duration
+                        state
+                        taskId
+                        isCurrentActivity
+                        isLoginActivity
+                        isLogoutActivity
+                        changedById
+                        changedByName
+                        isOutdial
+                        outboundType
+                        idleCode{
+                            id
+                            name
+                        }
+                        queue{
+                            id
+                            name
+                        }
+                        wrapupCode{
+                            id
+                            name
+                        }
+                    }
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
+"""
+
+ASR_query_string = """
+query ($from: Long!, $to: Long!) {
+    agentSession(from:$from, to: $to )  {
+        agentSessions {
+            agentSessionId
+            agentId
+            agentName
+            agentSignOutReason
+            multiMediaProfileType
+            userLoginId
+            teamId
+            teamName
+            orgId
+            orgName
+            skillsProfile
+            agentSkills
+            parentOrgId
+            parentOrgName
+            siteId
+            siteName
+            startTime
+            state
+            endTime
+            isActive
+            channelInfo {
+                availableCount
+                availableDuration
+                agentPhoneNumber
+                lastActivityTime
+                idleCodeName
+                connectedCount
+                connectedDuration
+                conferenceCount
+                conferenceDuration
+                consultCount
+                consultDuration
+                consultAnswerCount
+                consultAnswerDuration
+                consultToQueueAnswerCount
+                consultToQueueAnswerDuration
+                consultRequestCount
+                consultRequestDuration
+                consultToQueueCount
+                consultToQueueDuration
+                holdCount
+                holdDuration
+                outdialHoldCount
+                outdialHoldDuration
+                wrapupCount
+                wrapupDuration
+                currentState
+                channelId
+                channelType
+                idleCount
+                idleDuration
+                notRespondedCount
+                notRespondedDuration
+                outdialNotRespondedCount
+                outdialNotRespondedDuration
+                ringingCount
+                ringingDuration
+                outdialConnectedDuration
+                outdialRingingCount
+                outdialConferenceCount
+                outdialConferenceDuration
+                outdialConsultAnswerDuration
+                outdialConsultRequestCount
+                outdialConsultRequestDuration
+                outdialConsultCount
+                outdialConsultDuration
+                consultToQueueAnswerCount
+                consultToQueueAnswerDuration
+                outdialConsultToQueueAnswerCount
+                outdialConsultToQueueAnswerDuration
+                consultToQueueRequestCount
+                consultToQueueRequestDuration
+                outdialConsultToQueueRequestCount
+                outdialConsultToQueueRequestDuration
+                totalDuration
+                connectedCount
+                connectedDuration
+                idleCodeName
+                wrapupCount
+                wrapupDuration
+                outdialWrapupDuration
+                disconnectedCount
+                agentToAgentTransferCount
+                outdialAgentToAgentTransferCount
+                outdialAgentTransferToQueueRequestCount
+                agentTransferToQueueRequestCount
+                blindTransferCount
+                outdialBlindTransferCount
+                outdialCount
+                outdialTransferCount
+                disconnectedHoldCallsCount
+                transferCount
+                subChannelType
+                outdialConsultTransferDuration
+                callBackCount
+                consultToEpRequestedCount
+                consultToEpRequestedDuration
+                consultToEpAnsweredCount
+                consultToEpAnsweredDuration
+                outdialConsultToEpRequestedCount
+                outdialConsultToEpRequestedDuration
+                outdialConsultToEpAnsweredCount
+                outdialConsultToEpAnsweredDuration
+                totalReservationTime
+                reservationCount
+                postCallDuration
+                postCallCount
+                outdialPostCallDuration
+                outdialPostCallCount
+                postCallAssistanceDuration
+                postCallAssistanceCount
+                outdialPostCallAssistanceDuration
+                outdialPostCallAssistanceCount
+            }
+        }
+        pageInfo{
+            hasNextPage
+            endCursor
+        }
+    }
+}
+"""
+
+CAR_query_string = """
+query ($from: Long!, $to: Long!) {
+    taskDetails(from:$from, to: $to) {
+        tasks {
+            id
+            channelType
+            isOutdial
+            routingType
+            isEmailSent
+            emailToList
+            emailCcList
+            emailBccList
+            emailReplyTo
+            origin
+            destination
+            channelSubType
+            matchedSkillsProfile
+            preferredAgentName
+            activities {
+                nodes {
+                    id
+                    isActive
+                    createdTime
+                    endedTime
+                    agentId
+                    agentName
+                    agentPhoneNumber
+                    agentSessionId
+                    agentChannelId
+                    entrypointId
+                    entrypointName
+                    queueId
+                    queueName
+                    siteId
+                    siteName
+                    teamId
+                    teamName
+                    transferType
+                    activityType
+                    activityName
+                    eventName
+                    previousState
+                    nextState
+                    consultEpId
+                    consultEpName
+                    childContactId
+                    childContactType
+                    duration
+                    destinationAgentPhoneNumber
+                    destinationAgentId
+                    destinationAgentName
+                    destinationAgentSessionId
+                    destinationAgentChannelId
+                    destinationAgentTeamId
+                    destinationAgentTeamName
+                    destinationQueueName
+                    destinationQueueId
+                    terminationReason
+                    ivrScriptId
+                    ivrScriptName
+                    ivrScriptTagId
+                    ivrScriptTagName
+                    bnrMode
+                    lastActivityTime
+                    skillsAssignedIn
+                }
+            }
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
+"""
+
+CSR_query_string = """
+query ($from: Long!, $to: Long!) {
+    taskDetails(from:$from, to: $to) {
+        tasks {
+            id
+            status
+            channelType
+            createdTime
+            endedTime
+            origin
+            destination
+            contactReason
+            direction
+            terminationType
+            channelSubType
+            isActive
+            isCampaign
+            outdialType
+            isCallback
+            cpaStatus
+            customer {
+                name
+                phoneNumber
+                email
+            }
+            channelMetaData {
+                chat {
+                    chatReason
+                }
+            }       
+            lastQueue {
+                id
+                name
+                duration
+            }
+            lastSite {
+                id
+                name
+            }
+            lastTeam {
+                id
+                name
+            }
+            lastEntryPoint {
+                id
+                name
+            }
+            previousQueue {
+                id
+                name
+            }
+            preferredAgentSystemId
+            terminationReason
+            ivrScriptName
+            ivrScriptTagName
+            abandonedType
+            contactHandleType
+            feedback {
+                type
+                questionsAnswered
+                surveyCompleted
+                questionsPresented
+                comment
+            }
+            firstQueueName
+            terminatingEnd
+            lastWrapUpCodeId
+            lastWrapupCodeName
+            lastAgent {
+                id
+                name
+                signInId
+                sessionId
+                phoneNumber
+                channelId
+            }
+            abandonedSlCount
+            agentHangupCount
+            chainedInToQueueCount
+            firstQueueId
+            fullMonitoringCount
+            isHandledByPreferredAgent
+            ivrEndedCount
+            midcallMonitoringCount
+            routingType
+            ivrScriptId
+            ivrScriptTagId
+            campaignId
+            campaignName
+            campaignStatus
+            flowActivityName
+            flowActivitySequence
+            totalDuration
+            csatScore
+            blindTransferCount
+            conferenceCount
+            conferenceDuration
+            consultCount
+            consultDuration
+            holdCount 
+            holdDuration
+            selfserviceCount
+            selfserviceDuration
+            connectedCount
+            connectedDuration
+            consultToQueueCount
+            consultToQueueDuration
+            transferCount
+            wrapupDuration
+            ringingDuration
+            queueDuration
+            queueCount
+            captureRequested
+            isTranscriptionAvailable
+            consultToEPCount
+            consultToEPDuration
+            outdialConsultToEPCount
+            outdialConsultToEPDuration
+            agentToDnTransferCount
+            agentToAgentTransferCount
+            callCompletedCount
+            autoCsat
+            matchedSkills
+            requiredSkills
+            matchedSkillsProfile
+            isWithInServiceLevel
+            isContactOffered
+            transferErrorCount
+            isContactEscalatedToQueue
+            isOptOutOfQueue
+            isContactHandled
+            outdialConsultToQueueCount
+            outdialConsultCount
+            overflowCount
+            pausedCount
+            pausedDuration
+            previousAgentId
+            previousAgentSessionId
+            previousAgentName
+            queueTransferToEPCount
+            queueTransferToQueueCount
+            recordingFileSize
+            recordingCount
+            recordingErrorCount
+            resumedCount
+            shortInIVRCount
+            shortInQueueCount
+            silentMonitoringCount
+            recordingStereoBlobId
+            suddenDisconnectCount
+            totalMonitoringCount
+            outdialConsultToQueueDuration
+            transferInToEPCount
+            isOutdial
+            monitoringTimestamp
+            isRecordingDeleted
+            isMonitored
+            monitorFullName
+            isBarged
+            bargedInDuration
+            bargedInCount
+            bargedInFailedCount
+            preferredAgentName
+            agentTransferedInCount
+            agentToEntrypointTransferCount
+            agentToQueueTransferCount
+            totalBnrDuration
+            lastActivityTime
+        }
+        pageInfo {
+            hasNextPage
+            endCursor
+        }
+    }
+}
+"""
+
+_QUERY_TEMPLATE_MAP = {
+    "AAR": AAR_query_string,
+    "ASR": ASR_query_string,
+    "CAR": CAR_query_string,
+    "CSR": CSR_query_string
+
+}

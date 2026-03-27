@@ -78,7 +78,7 @@ class ModInputWEBEX_CONTACT_CENTER_SEARCH(base_mi.BaseModInput):
         
         scheme.add_argument(
             smi.Argument(
-                'query',
+                'query_template',
                 required_on_create=True,
             )
         )

@@ -1475,11 +1475,33 @@
                             ]
                         },
                         {
-                            "field": "query",
-                            "label": "Query",
-                            "help": "A graphQL query specifying the task attributes needed in the response",
+                            "field": "query_template",
+                            "label": "Query Template",
+                            "help": "Please select a query template",
                             "required": true,
-                            "type": "text"
+                            "type": "singleSelect",
+                            "options": {
+                                "disableSearch": true,
+                                "autoCompleteFields": [
+                                    {
+                                        "value": "AAR",
+                                        "label": "AAR"
+                                    },
+                                    {
+                                        "value": "ASR",
+                                        "label": "ASR"
+                                    },
+                                    {
+                                        "value": "CAR",
+                                        "label": "CAR"
+                                    },
+                                    {
+                                        "value": "CSR",
+                                        "label": "CSR"
+                                    }
+                                ]
+                            },
+                            "defaultValue": "AAR"
                         }
                     ]
                 }
