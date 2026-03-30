@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+
 import json
 
 from webex_constants import (
@@ -96,21 +97,23 @@ def collect_events(helper, ew):
 
     for call in calls:
         try:
-            call_start_time = call["Start time"]
+            call_start_time_ts = datetime.strptime(call["Start time"], "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc).timestamp()
             
             meeting_event = helper.new_event(
                                 source=helper.get_input_type() + "://" + helper.get_input_stanza_names(),
                                 index=helper.get_output_index(),
                                 sourcetype="cisco:webex:call:detailed_history",
                                 data=json.dumps(call),
-                                time=call_start_time,
+                                time=call_start_time_ts,
             )
+            
             ew.write_event(meeting_event)
-             # save the end_time of the last round as checkpoint for next ingestion
-            helper.save_check_point(last_timestamp_checkpoint_key, end_time)
-            helper.log_debug("[-] Saved checkpoint: Last run time saved: {}".format(helper.get_check_point(last_timestamp_checkpoint_key)))
         except Exception as e:
             helper.log_error(
                 "[-] Error happened while writing data into Splunk: {}".format(e)
             )
             raise e
+        
+    # save the end_time of the last round as checkpoint for next ingestion
+    helper.save_check_point(last_timestamp_checkpoint_key, end_time)
+    helper.log_debug("[-] Saved checkpoint: Last run time saved: {}".format(helper.get_check_point(last_timestamp_checkpoint_key)))
