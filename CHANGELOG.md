@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added support for POST method in the Generic Input
 - Added support for search endpoint of Webex Contact Center
 
+## [v1.3.3] - 2026-03-30
+
+### Fixed
+
+- Added a validation to build new URL for the Detailed Call History input.
+- Updated checkpoint logic for Detailed Call History input.
+
 ## [v1.3.2] - 2026-02-24
 
 ### Changed
