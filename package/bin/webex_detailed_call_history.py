@@ -65,6 +65,13 @@ class ModInputWEBEX_DETAILED_CALL_HISTORY(base_mi.BaseModInput):
         
         scheme.add_argument(
             smi.Argument(
+                'account_region',
+                required_on_create=False,
+            )
+        )
+        
+        scheme.add_argument(
+            smi.Argument(
                 'locations',
                 required_on_create=False,
             )
@@ -78,14 +85,14 @@ class ModInputWEBEX_DETAILED_CALL_HISTORY(base_mi.BaseModInput):
         locations = definition.parameters.get('locations', None)
         
         if start_time_start is not None:
-            start_time = datetime.strptime(start_time_start, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+            start_time = datetime.strptime(start_time_start, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 
             if start_time <= datetime.now(timezone.utc) - timedelta(days=2):
                 raise ValueError(
                     "Start time cannot be earlier than 48 hours ago. Please enter a date after {}.".format(datetime.strftime(datetime.now(timezone.utc) - timedelta(days=2),"%Y-%m-%d")))
             
         if end_time_start is not None:
-            end_time = datetime.strptime(end_time_start, "%Y-%m-%dT%H:%M:%S.%fZ").replace(tzinfo=timezone.utc)
+            end_time = datetime.strptime(end_time_start, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
             
             if end_time > datetime.now(timezone.utc) + timedelta(days=2):
                  raise ValueError(
