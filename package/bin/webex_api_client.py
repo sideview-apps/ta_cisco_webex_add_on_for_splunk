@@ -92,7 +92,6 @@ def make_get_request_to_webex(
     client_secret,
     params,
     next_page_link,
-    retry=True,
     is_custom_endpoint=False,
     webex_account_region="us_ca"
 ):
@@ -148,55 +147,7 @@ def make_get_request_to_webex(
                     response.url, response.status_code, response.text
                 )
             )
-            # refresh the expired/invalid access token
-            # Add retry to avoid infinity loop
-            if response.status_code == UNAUTHORIZED_STATUS and retry:
-                helper.log_info("[-] Unauthorized message: {}".format(response.text))
-                try:
-                    helper.log_debug(
-                        "[-] Refreshing the expired/invalid access token"
-                    )
-                    # get the latest refresh_token
-                    refresh_token = helper.get_arg("global_account").get(
-                        "refresh_token"
-                    )
-                    (
-                        new_access_token,
-                        new_refresh_token,
-                        new_expires_in,
-                    ) = update_access_token(
-                        helper,
-                        account_name,
-                        client_id,
-                        client_secret,
-                        refresh_token,
-                        base_endpoint
-                    )
-                except Exception as e:
-                    helper.log_error(
-                        "[-] Error happened while updating access token in endpoint-{}: {}".format(
-                            endpoint, e
-                        )
-                    )
-                    raise e
-
-                # get webex users using new access token
-                make_get_request_to_webex(
-                    helper,
-                    base_endpoint,
-                    endpoint,
-                    new_access_token,
-                    new_refresh_token,
-                    account_name,
-                    client_id,
-                    client_secret,
-                    params,
-                    retry=False,
-                    is_custom_endpoint=False,
-                    webex_account_region="us_ca"
-                )
-            else:
-                response.raise_for_status()
+            response.raise_for_status()
         else:
             data = response.json()
         return data, response.headers
