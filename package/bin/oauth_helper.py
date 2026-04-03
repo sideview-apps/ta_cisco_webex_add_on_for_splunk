@@ -160,7 +160,8 @@ class OAuth:
 
             # Calculate expired time for new access token
             now = datetime.now(timezone.utc)
-            delta = int(new_expires_in)
+            # force the refresh logic one day before it gets expired
+            delta = int(new_expires_in) - 86400
             expired_time = (now + timedelta(seconds=delta)).strftime(
                 "%m/%d/%Y %H:%M:%S"
             )

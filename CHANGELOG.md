@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Added support for POST method in the Generic Input
 - Added support for search endpoint of Webex Contact Center
 
+## [v1.3.4] - 2026-03-30
+
+### Fixed
+
+- Fixed the Invalid Refresh Token issue by removing the retry logic inside API call.
+
 ## [v1.3.3] - 2026-03-30
 
 ### Fixed
