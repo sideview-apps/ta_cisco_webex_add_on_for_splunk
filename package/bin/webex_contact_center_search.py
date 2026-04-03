@@ -12,23 +12,23 @@ from splunklib import modularinput as smi
 from solnlib import conf_manager
 from solnlib import log
 from solnlib.modular_input import checkpointer
-from splunktaucclib.modinput_wrapper import base_modinput  as base_mi
-import input_module_webex_generic_endpoint as input_module
+from splunktaucclib.modinput_wrapper import base_modinput  as base_mi 
+import input_module_webex_contact_center_search as input_module
 
 
 bin_dir  = os.path.basename(__file__)
 app_name = os.path.basename(os.path.dirname(os.getcwd()))
 
-class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput): 
+class ModInputWEBEX_CONTACT_CENTER_SEARCH(base_mi.BaseModInput): 
 
     def __init__(self):
         use_single_instance = False
-        super(ModInputWEBEX_GENERIC_ENDPOINT, self).__init__(app_name, "webex_generic_endpoint", use_single_instance) 
+        super(ModInputWEBEX_CONTACT_CENTER_SEARCH, self).__init__(app_name, "webex_contact_center_search", use_single_instance) 
         self.global_checkbox_fields = None
 
     def get_scheme(self):
-        scheme = smi.Scheme('webex_generic_endpoint')
-        scheme.description = 'Webex Generic Endpoint'
+        scheme = smi.Scheme('webex_contact_center_search')
+        scheme.description = 'Webex Contact Center - Search'
         scheme.use_external_validation = True
         scheme.streaming_mode_xml = True
         scheme.use_single_instance = False
@@ -50,14 +50,14 @@ class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput):
         
         scheme.add_argument(
             smi.Argument(
-                'webex_endpoint',
+                'webex_contact_center_region',
                 required_on_create=True,
             )
         )
         
         scheme.add_argument(
             smi.Argument(
-                'webex_base_url',
+                'org_id',
                 required_on_create=True,
             )
         )
@@ -65,7 +65,7 @@ class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput):
         scheme.add_argument(
             smi.Argument(
                 'start_time',
-                required_on_create=False,
+                required_on_create=True,
             )
         )
         
@@ -75,25 +75,11 @@ class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput):
                 required_on_create=False,
             )
         )
-
+        
         scheme.add_argument(
             smi.Argument(
-                'method',
+                'query_template',
                 required_on_create=True,
-            )
-        )
-
-        scheme.add_argument(
-            smi.Argument(
-                'query_params',
-                required_on_create=False,
-            )
-        )
-
-        scheme.add_argument(
-            smi.Argument(
-                'request_body',
-                required_on_create=False,
             )
         )
         
@@ -101,12 +87,7 @@ class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput):
 
     def validate_input(self, definition):
         """validate the input stanza"""
-        request_body = definition.parameters.get('request_body', None)
-        if request_body is not None:
-            try:
-                json.loads(request_body)
-            except json.JSONDecodeError:
-                raise ValueError("Invalid JSON string")
+        """Implement your own validation logic to validate the input stanza configurations"""
         pass
 
     def get_app_name(self):
@@ -114,7 +95,7 @@ class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput):
 
     def collect_events(helper, ew):
         input_module.collect_events(helper, ew)
-
+        
     def get_account_fields(self):
         account_fields = []
         return account_fields
@@ -141,7 +122,7 @@ class ModInputWEBEX_GENERIC_ENDPOINT(base_mi.BaseModInput):
 
 
 if __name__ == '__main__':
-    exit_code = ModInputWEBEX_GENERIC_ENDPOINT().run(sys.argv)
+    exit_code = ModInputWEBEX_CONTACT_CENTER_SEARCH().run(sys.argv)
     sys.exit(exit_code)
 
 
