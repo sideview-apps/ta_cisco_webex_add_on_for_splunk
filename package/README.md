@@ -4,6 +4,7 @@
 #### Here are the endpoints, their corresponding source types, and the required scopes.
 | Splunk Input       | Webex Endpoint        | Splunk Sourcetype               | Required Scopes                 |
 |--------------------|-----------------------|---------------------------------|---------------------------------|
+| Webex Generic Endpoint                | [Webex API](https://developer.webex.com/messaging/docs/basics)                       | cisco:webex:<**API Endpoint**>       | Refer to the endpoint documentation to confirm the required scopes |
 | Webex Scheduled Meetings       | [Meetings](https://developer.webex.com/docs/api/v1/meetings/list-meetings)                       | cisco:webex:meetings         | meeting:admin_schedule_read spark-admin:people_read   |
 | Webex Meetings Summary Report       | [Meeting Usage Reports](https://developer.webex.com/docs/api/v1/meetings-summary-report/list-meeting-usage-reports)                       | cisco:webex:meeting:usage:reports         | meeting:admin_schedule_read meeting:admin_participants_read meeting:admin_config_read    |
 | Webex Meetings Summary Report       | [Meeting Attendee Reports](https://developer.webex.com/docs/api/v1/meetings-summary-report/list-meeting-attendee-reports)                       | cisco:webex:meeting:attendee:reports             | meeting:admin_schedule_read meeting:admin_participants_read meeting:admin_config_read  |
@@ -271,7 +272,7 @@ The input uses checkpointing to avoid ingesting duplicate data. After the initia
     - **Index** (_required_): Index for storing data.
     - **Global Account** (_required_): Select the account created during Configuration.
     - **Webex Contact Center Region(_required_)**: Select your Webex Contact Center Region.
-    - **Org ID**(_required_): Select your Webex Contact Center Orgnization ID.
+    - **Org ID**(_required_): Enter your Webex Contact Center Orgnization ID.
     - **Start Time** (_required_): Start date and time (inclusive) in the format YYYY-MM-DDTHH:MM:SSZ, `example:2023-01-01T00:00:00Z`. 
     - **End Time** (_optional_): End date and time in the format YYYY-MM-DDTHH:MM:SSZ.(Optional), `example:2023-02-01T00:00:00Z`. Leave it blank if an ongoing ingestion mode is needed.
     - **Query Template** (_required_): Select the appropriate Query Template for the data source you wish to ingest.

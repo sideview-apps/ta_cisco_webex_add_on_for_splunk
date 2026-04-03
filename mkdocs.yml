@@ -60,3 +60,4 @@ nav:
       - Webex Meeting Qualities Input : 'ConfigureMeetingQualitiesInput/index.md'
       - Webex Detailed Call History Input : 'ConfigureDetailedCallHistoryInput/index.md'
       - Webex Security Audit Event Input : 'ConfigureSecurityAuditEventInput/index.md'
+      - Webex Contact Center - Search Input : 'ConfigureWebexContactCenterSearch/index.md'

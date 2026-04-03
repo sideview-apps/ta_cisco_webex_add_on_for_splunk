@@ -3,6 +3,7 @@
 
 | Splunk Input       | Webex Endpoint        | Splunk Sourcetype               | Required Scopes                 |
 |--------------------|-----------------------|---------------------------------|---------------------------------|
+| Webex Generic Endpoint                | [Webex API](https://developer.webex.com/messaging/docs/basics)                       | cisco:webex:<**API Endpoint**>       | Refer to the endpoint documentation to confirm the required scopes      |
 | Webex Scheduled Meetings       | [Meetings](https://developer.webex.com/docs/api/v1/meetings/list-meetings)                       | cisco:webex:meetings         | meeting:admin_schedule_read spark-admin:people_read   |
 | Webex Meetings Summary Report       | [Meeting Usage Reports](https://developer.webex.com/docs/api/v1/meetings-summary-report/list-meeting-usage-reports)                       | cisco:webex:meeting:usage:reports         | meeting:admin_schedule_read meeting:admin_participants_read meeting:admin_config_read  |
 | Webex Meetings Summary Report       | [Meeting Attendee Reports](https://developer.webex.com/docs/api/v1/meetings-summary-report/list-meeting-attendee-reports)                       | cisco:webex:meeting:attendee:reports             | meeting:admin_schedule_read meeting:admin_participants_read meeting:admin_config_read  |
@@ -10,3 +11,4 @@
 | Webex Meeting Qualities       | [Meeting Qualities](https://developer.webex.com/docs/api/v1/meeting-qualities/get-meeting-qualities)                               | cisco:webex:meeting:qualities              | analytics:read_all   |
 | Webex Detailed Call History       | [Detailed Call History](https://developer.webex.com/docs/api/v1/reports-detailed-call-history/get-detailed-call-history)                               | cisco:webex:call:detailed_history             | spark-admin:calling_cdr_read |
 | Webex Security Audit Events       | [Security Audit Events](https://developer.webex.com/admin/docs/api/v1/security-audit-events/list-security-audit-events)                               | cisco:webex:security:audit:events            | audit:events_read spark:organizations_read |
+| Webex Contact Center - Search       | [Webex Contact Center - Search](https://developer.webex.com/webex-contact-center/docs/api/v1/search/search)                               | cjp:config or cjp:config_read            | cisco:webex:contact:center:AAR cisco:webex:contact:center:ASR cisco:webex:contact:center:CAR cisco:webex:contact:center:CSR |

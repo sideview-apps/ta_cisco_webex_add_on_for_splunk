@@ -1477,7 +1477,7 @@
                         {
                             "field": "query_template",
                             "label": "Query Template",
-                            "help": "Please select a query template",
+                            "help": "Select the appropriate Query Template for the data source you wish to ingest.",
                             "required": true,
                             "type": "singleSelect",
                             "options": {
