@@ -9,6 +9,8 @@ Enter a `Start Time` whenever it is supported by the endpoint to help avoid dupl
 
 Some endpoints require specific query parameters to function correctly. Users can add these parameters using the `Query Params` field. The input also supports path parameters in the URL, which should be included in the `API Endpoint` field.
 
+Most endpoints require a **GET** request. If a **POST** request is necessary, select `POST` from the `Request Method` dropdown. You may also provide the payload in the `Request Body` field if required.
+
 ## Configure Webex Generic Endpoint input through Splunk Web 
 
 1. In the **Inputs** tab select **Create New Input**.
@@ -29,4 +31,6 @@ Each attribute in the following table corresponds to a field in Splunk Web.
 |`webex_base_url`         |Webex Base API URL                |Enter the base URL for the endpoint. Most Webex APIs use `webexapis.com`, but some may require a different base URL. For example, endpoints that require the `analytics:read_all` scope often use `analytics.webexapis.com`. Always refer to the endpoint documentation to confirm the correct base URL.|
 |`start_time`             |Start Time                        |Required, Inclusive start date and time in the format `YYYY-MM-DDTHH:MM:SSZ`, e.g. `2023-01-01T00:00:00Z`.  Be aware of the endpoint limitations and valid ranges.|
 |`end_time`               |End Time                          |Optional, End date and time in the format `YYYY-Mon-DDTHH:MM:SSZ`, e.g. `2023-02-01T00:00:00Z`. Leave blank if an ongoing ingestion mode is needed. Be aware of the endpoint limitations and valid ranges.|
-|`query_params. `         |Query Params                      |Include any query parameters for the endpoint. For multiple parameters, enter them as comma-separated values (e.g. `locationId=0000000, messageId=0000000, teamId=0000000`).|
+|`method`         |Request Method                      |Required,Select the Request Method.|
+|`query_params`         |Query Params                      |Optional, Include any query parameters for the endpoint. For multiple parameters, enter them as comma-separated values (e.g. `locationId=0000000, messageId=0000000, teamId=0000000`).|
+|`request_body`         |Request Body                      |Optional, Please enter it as a JSON-formatted string. Example: {"query":"query { devices(type: CONTROLLER) { hostName ipAddress version } }","variables":{"startTime":1672531200000,"endTime":1675209600000}}|

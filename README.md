@@ -19,6 +19,9 @@ Here are the endpoints and their mapping soucetypes.
 | Webex Detailed Call History       | [Detailed Call History](https://developer.webex.com/docs/api/v1/reports-detailed-call-history/get-detailed-call-history)                               | cisco:webex:call:detailed_history             |
 | Webex Security Audit Events       | [Security Audit Events](https://developer.webex.com/admin/docs/api/v1/security-audit-events/list-security-audit-events)                               | cisco:webex:security:audit:events            |
 | Webex Generic Endpoint                | [Webex API](https://developer.webex.com/messaging/docs/basics)                       | cisco:webex:<**API Endpoint**>       |
+| Webex Contact Center - Search                | [Webex Contact Center - Search](https://developer.webex.com/webex-contact-center/docs/api/v1/search/search)                       | cisco:webex:contact:center:AAR cisco:webex:contact:center:ASR cisco:webex:contact:center:CAR cisco:webex:contact:center:CSR    |
+
+
 
 ## Versions Supported
 
