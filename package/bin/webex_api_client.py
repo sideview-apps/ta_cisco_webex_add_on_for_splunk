@@ -116,6 +116,8 @@ def make_get_request_to_webex(
             #construct the URL depending on the region
             if webex_account_region == "us_ca":
                 url = f"{protocol}//analytics-calling.{rest}"
+            elif webex_account_region == "gov":
+                url = f"{protocol}//analytics-calling-{webex_account_region}.webexapis.com/v1/cdr_feed"
             else:
                 url = f"{protocol}//analytics-calling-{webex_account_region}.{rest}"
        

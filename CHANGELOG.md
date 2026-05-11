@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v1.4.1] - 2026-05-11
+
+### Fixed
+
+- Fixed the FQDN link for Webex Detailed Call History API specifically for FedRAMP/Gov accounts.
+
 ## [v1.4.0] - 2026-02-27
 
 ### Added
