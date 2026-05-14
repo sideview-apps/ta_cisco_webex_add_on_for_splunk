@@ -15,6 +15,7 @@ def collect_events(helper, ew):
     # insert input values into the url and/or header (helper class handles credential store)
     opt_start_time = helper.get_arg('start_time')
     opt_end_time = helper.get_arg('end_time')
+    opt_webex_account_region = helper.get_arg('account_region')
 
     # Get account info
     opt_global_account = helper.get_arg("global_account")
@@ -24,6 +25,7 @@ def collect_events(helper, ew):
     stored_access_token = opt_global_account.get("access_token")
     stored_refresh_token = opt_global_account.get("refresh_token")
     base_endpoint = opt_global_account.get("endpoint")
+    is_gov_account = opt_global_account.get("is_gov_account")
 
     # check the checkpoint
     # get start time from checkpoint
@@ -71,6 +73,7 @@ def collect_events(helper, ew):
 
     # retrieve the meeting qualities data for each meeting
     latest_time = None
+    account_region = "gov" if is_gov_account == "1" else opt_webex_account_region
     
     for meeting in meetings:
         # only ingest the meetings that happened after the last checkpoint time
@@ -93,6 +96,7 @@ def collect_events(helper, ew):
                 client_secret,
                 meetings_qualities_params,
                 _RESPONSE_TAG_MAP[_GET_MEETING_QUALITIES],
+                webex_account_region=account_region
             )
             helper.log_debug("[-] meetings qualities data list size: {} for meeting: {}".format(len(meetings_qualities_data_list), meeting["id"]))
 

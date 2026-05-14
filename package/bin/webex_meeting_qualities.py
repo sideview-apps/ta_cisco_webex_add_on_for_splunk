@@ -53,6 +53,13 @@ class ModInputWEBEX_MEETING_QUALITIES(base_mi.BaseModInput):
                 required_on_create=True,
             )
         )
+
+        scheme.add_argument(
+            smi.Argument(
+                'account_region',
+                required_on_create=True,
+            )
+        )
         
         scheme.add_argument(
             smi.Argument(
