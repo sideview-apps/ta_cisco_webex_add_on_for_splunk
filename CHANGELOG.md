@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- `webex_meetings` input re-ingested every meeting on every interval whenever a single host's meetings request failed (e.g. a Webex `502`). The checkpoint is saved only after the entire per-host loop completes, so one failing host aborted the run before `save_check_point()`, leaving the checkpoint unset and the dedup comparison permanently falling back to `start_time`. The per-host fetch and write now log and continue instead of raising, so the checkpoint advances and duplicate ingestion stops.
+
 ## [v1.4.2] - 2026-05-28
 
 ### Fixed
