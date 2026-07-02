@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [v1.4.3] - 2026-07-02
+
+### Fixed
+
+- Fixed the "'bytes' object has no attribute 'encode'" error when using a proxy with credentials by bundling httplib2 0.22.0 with the add-on.
+
 ## [v1.4.2] - 2026-05-28
 
 ### Fixed
