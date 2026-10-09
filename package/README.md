@@ -10,6 +10,7 @@
 | Webex Meetings Summary Report       | [Meeting Attendee Reports](https://developer.webex.com/docs/api/v1/meetings-summary-report/list-meeting-attendee-reports)                       | cisco:webex:meeting:attendee:reports             | meeting:admin_schedule_read meeting:admin_participants_read meeting:admin_config_read  |
 | Webex Admin Audit Events       | [Admin Audit Events](https://developer.webex.com/docs/api/v1/admin-audit-events)                               | cisco:webex:admin:audit:events              | audit:events_read spark:organizations_read  |
 | Webex Meeting Qualities       | [Meeting Qualities](https://developer.webex.com/docs/api/v1/meeting-qualities/get-meeting-qualities)                               | cisco:webex:meeting:qualities              | analytics:read_all   |
+| Webex Meeting Qualities       | [Meetings](https://developer.webex.com/docs/api/v1/meetings/list-meetings) (ended meeting instances)                               | cisco:webex:meeting:instances              | analytics:read_all   |
 | Webex Detailed Call History       | [Detailed Call History](https://developer.webex.com/docs/api/v1/reports-detailed-call-history/get-detailed-call-history)                               | cisco:webex:call:detailed_history             | spark-admin:calling_cdr_read |
 | Webex Security Audit Events       | [Security Audit Events](https://developer.webex.com/admin/docs/api/v1/security-audit-events/list-security-audit-events)                               | cisco:webex:security:audit:events            | audit:events_read spark:organizations_read |
 | Webex Contact Center - Search       | [Webex Contact Center - Search](https://developer.webex.com/webex-contact-center/docs/api/v1/search/search)                               | cjp:config or cjp:config_read            | cisco:webex:contact:center:AAR cisco:webex:contact:center:ASR cisco:webex:contact:center:CAR cisco:webex:contact:center:CSR |
@@ -173,6 +174,8 @@ The input uses checkpointing to avoid ingesting duplicate data. After the initia
 **Webex Meeting Qualities**
 
 The **Webex Meeting Qualities** input is used to fetch the data from [Webex Meeting Qualities](https://developer.webex.com/docs/api/v1/meeting-qualities/get-meeting-qualities) endpoint. It allows users to retrieve quality data for meetings. Only organization administrators can retrieve meeting quality data.
+
+The same input also writes each ended meeting instance it finds, as sourcetype `cisco:webex:meeting:instances`.  An instance carries its own id, which the quality records call `meetingInstanceId`, along with `meetingSeriesId` and `scheduledMeetingId`, which link it to the scheduled meeting in `cisco:webex:meetings`.
 
 The `Start Time` is required. Set the starting date and time to fetch meeting quality data. The Start time is inclusive and should be in the format YYYY-MM-DDTHH:MM:SSZ (example:2023-01-01T00:00:00Z). Due to the Webex API limitation, Quality information may be retrieved for up to 7 days. The Start Time **MUST** be within 7 days from the current time.
 

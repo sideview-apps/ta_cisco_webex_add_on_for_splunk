@@ -71,6 +71,8 @@ def collect_events(helper, ew):
     
     helper.log_debug("[-] meetings data size: {}".format(len(meetings)))
 
+    write_meeting_instances(helper, ew, meetings, opt_start_time)
+
     # retrieve the meeting qualities data for each meeting
     latest_time = None
     account_region = "gov" if is_gov_account == "1" else opt_webex_account_region
@@ -144,3 +146,53 @@ def collect_events(helper, ew):
     if latest_time:
         helper.save_check_point(last_timestamp_checkpoint_key, latest_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
         helper.log_debug("[-] Saved checkpoint: Last run time saved: {}".format(helper.get_check_point(last_timestamp_checkpoint_key)))
+
+def write_meeting_instances(helper, ew, meetings, opt_start_time):
+    """
+    Write each ended meeting instance as an event of its own.
+
+    The list above is fetched only to get the ids to ask for qualities with, but
+    each instance is worth keeping in its own right.  It is the one record that
+    carries all three of a meeting's ids: its own id ("<series>_I_<n>", the same
+    value the qualities call meetingInstanceId and the usage and attendee
+    reports call meetingId), meetingSeriesId, and scheduledMeetingId, which is
+    the id the scheduled meeting has in cisco:webex:meetings.  Nothing else
+    links a meeting that happened to the meeting that was scheduled.  It is
+    also the only record of an ad-hoc or Personal Room meeting that had no
+    quality data, since those never appear among the scheduled meetings.
+
+    It has a checkpoint of its own, so that the qualities checkpoint below keeps
+    exactly the behaviour it had.  That one only advances past a meeting once
+    its qualities were written, so a meeting with none is seen again on the next
+    run, and an instance written from that loop would be written again too.
+    """
+    checkpoint_key = "{}_meeting_instances_last_timestamp".format(
+        helper.get_input_stanza_names()
+    )
+    checkpoint_value = helper.get_check_point(checkpoint_key) or opt_start_time
+    last_checkpoint_time = datetime.strptime(checkpoint_value, "%Y-%m-%dT%H:%M:%SZ")
+    latest_time = None
+
+    for meeting in meetings:
+        try:
+            meeting_start_time = datetime.strptime(meeting["start"], "%Y-%m-%dT%H:%M:%SZ")
+            if meeting_start_time <= last_checkpoint_time or not meeting.get("id", None):
+                continue
+            event_time = (meeting_start_time - datetime(1970, 1, 1)).total_seconds()
+            meeting_instance_event = helper.new_event(
+                source=helper.get_input_type() + "://" + helper.get_input_stanza_names(),
+                index=helper.get_output_index(),
+                sourcetype="cisco:webex:meeting:instances",
+                data=json.dumps(meeting),
+                time=event_time,
+            )
+            ew.write_event(meeting_instance_event)
+        except Exception as e:
+            # One bad record must not stop the rest, nor the checkpoint save.
+            helper.log_error("[-] Error happened while writing meeting instance {} into Splunk: {}".format(meeting.get("id"), e))
+            continue
+        latest_time = meeting_start_time if latest_time is None else max(latest_time, meeting_start_time)
+
+    if latest_time:
+        helper.save_check_point(checkpoint_key, latest_time.strftime("%Y-%m-%dT%H:%M:%SZ"))
+        helper.log_debug("[-] Saved meeting instances checkpoint: {}".format(helper.get_check_point(checkpoint_key)))
